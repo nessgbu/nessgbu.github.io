@@ -68,5 +68,7 @@ window.onload = function(){
     lbc.attack();
 };
 
-
+window.addEventListener('resize',function(e){
+    alert('height: ' + window.innerHeight + ' width: ' +window.innerWidth)
+},false)
 
