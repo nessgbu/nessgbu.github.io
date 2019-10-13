@@ -1,3 +1,4 @@
+var message = '';
 //武将 构造函数
 function Player(name,head){
     this.main = 0;
@@ -7,10 +8,19 @@ function Player(name,head){
     this.intelligence = 130.45;
     this.speed = 137.7;
     this.team = null;
-    this.skill0 = skill.defaultSkill;
-    this.skill1 = skill.defaultSkill;
-    this.skill2 = skill.defaultSkill;
-    this.skills = [this.skill0,this.skill1,this.skill2];
+    this.skills = [skilllist.defaultSkill,skilllist.defaultSkill,skilllist.defaultSkill];
+    this.skillState0 = {
+        readyState : 0,
+        damage : 0
+    };
+    this.skillState1 = {
+        readyState : 0,
+        damage : 0
+    };
+    this.skillState2 = {
+        readyState : 0,
+        damage : 0
+    };
     this.damage = 0;
     this.bedamaged = 0;
     this.buff = {},
@@ -34,6 +44,12 @@ function Player(name,head){
             name : '缴械',
             restRound : 0,
             from : null
+        },
+        sandstorm :　{
+            name : '沙暴',
+            restRound : 0,
+            from : null,
+            damage : 0
         }
     }
 };
@@ -42,8 +58,7 @@ Player.prototype = {
     getObj :  function(quantity) {
         let objs = [];
         if(this.debuff.confusion.restRound){
-            console.log(this.debuff.confusion.restRound);
-            let team =  teamAll;
+            let team = [...teamAll];
             team.splice(team.findIndex((val,index,arr) => {
                 return val == this;
             }),1);
@@ -56,7 +71,7 @@ Player.prototype = {
             return objs;
         }
         if(this.team == teamA){
-            let team = teamB;
+            let team = [...teamB];
             for(let i = 1;i <= quantity;i++){
                 let index = getRandomNum(1,team.length) - 1;
                 objs.push(team[index]);
@@ -65,7 +80,7 @@ Player.prototype = {
             return objs;
         }
         if(this.team == teamB){
-            let team = teamA;
+            let team = [...teamA];
             for(let i = 1;i <= quantity;i++){
                 let index = getRandomNum(1,team.length) - 1;
                 objs.push(team[index]);
@@ -76,28 +91,53 @@ Player.prototype = {
         return objs;
     },
     //发动技能
-    skillLunch : function(skill,player){
-        if(getRandomNum(1,1000)<=skill.probability){
-            skill.start(player);
+    skillLaunch : function(skill,player,state){
+        if(state.readyState){
+            console.log('ok');
+            skill.launch(player);
+            state.readyState = 0;
+            return ;
         }
+        if(getRandomNum(1,1000) <= skill.probability){
+            skill.start(player);
+            if(skill.needReady){
+                state.readyState = 1;
+            }
+        }  
+        
     },
     //行动
     go : function(){
+        if(this.debuff.sandstorm.restRound){
+            this.bedamaged += this.debuff.sandstorm.damage;
+            this.debuff.sandstorm.from.damage += this.debuff.sandstorm.damage;
+            message += `
+                <span style="font-weight:bold">${this.name}</span>受到来自${this.debuff.sandstorm.from.name}的沙暴效果战损<span style="color:red">${this.debuff.sandstorm.damage}</span>
+            `;
+            this.debuff.sandstorm.restRound -= 1;
+        }
         if(!this.debuff.coma.restRound){
             if(!this.debuff.silence.restRound){
-                this.skillLunch(this.skill0,this);
-                this.skillLunch(this.skill1,this);
-                this.skillLunch(this.skill2,this);
+                    this.skillLaunch(this.skills[0],this,this.skillState0);
+                    this.skillLaunch(this.skills[1],this,this.skillState1);
+                    this.skillLaunch(this.skills[2],this,this.skillState2);
+                
             }else{
-                console.log(this.name+'处于来自'+this.debuff.silence.from+'的禁言状态，无法发动技能')
+                message += `${this.name}+处于来自${this.debuff.silence.from.name}的禁言状态，无法发动技能<br>`
+                this.debuff.silence.restRound -= 1;
             }
             if(!this.debuff.disarm.restRound){
                 let obj = this.getObj(1);
-                console.log(this.name+'对'+obj[0].name+'发动了普通攻击');
+                message += `${this.name}对${obj[0].name}发动了普通攻击<br>`
+            }else{
+                message += `${this.name}处于来自${this.debuff.disarm.from.name}的缴械状态，无法普通攻击<br>`;
+                this.debuff.disarm.restRound -= 1;
             }
         }else{
-            console.log(this.name+'处于来自'+this.debuff.coma.from+'的震慑状态，无法行动');
+            message += `${this.name}处于来自${this.debuff.coma.from.name}的震慑状态，无法行动`;
+            this.debuff.coma.restRound -= 1;
         }
+        message += `<br>`;
     }
 }
 
@@ -112,13 +152,19 @@ function getRandomNum(first,last){
 }
 
 //技能列表
-skill = {
+var skilllist = {
     yijujianmie : {
         name : "一举歼灭",
         parent : '张梁',
         probability :　400,
-        start : function(){
-            console.log();
+        needReady : true,
+        start : function(player){
+            
+            message += `<span style="font-weight:bold">${player.name}</span> 准备发动<span style="color:orange"> ${this.name} </span><br>`;
+            
+        },
+        launch : function(player){
+            message += `<span style="font-weight:bold">${player.name}</span> 发动了<span style="color:orange"> ${this.name} </span><br>`
         }
     },
     tujishangrou : {
@@ -135,17 +181,19 @@ skill = {
             objs[0].bedamaged += allDamage;
             objs[1].bedamaged += allDamage;
 
-            let message = `
-            <span style="color:green">${player.name}</span>
-            对
-            <span style="color:red">${objs[0].name}、${objs[1].name}</span>发动了屠几上肉<br>
-            <span style="font-style:bold">${objs[0].name}</span>由于${player.name}的${this.name}受到${allDamage}点伤害<br>
-            <span style="font-style:bold">${objs[1].name}</span>由于${player.name}的${this.name}受到${allDamage}点伤害<br>
-            `
-            
-            ;
-            document.getElementById('battle_message').innerHTML = message;
-            console.log(message);
+            message += `
+            <span style="font-weight:bold"> ${player.name} </span> 
+            对 
+            <span style="font-weight:bold"> ${objs[0].name}、${objs[1].name} </span>发动了<span style="color:orange"> 屠几上肉 </span><br>
+            <span style="font-weight:bold"> ${objs[0].name} </span>由于<span style="font-weight:bold"> ${player.name} </span>的<span style="color:orange"> ${this.name} </span>
+            受到<span style="color:red"> ${attackDamage} </span>点兵刃伤害<br>
+            <span style="font-weight:bold"> ${objs[0].name} </span>由于<span style="font-weight:bold"> ${player.name} </span>的<span style="color:orange"> ${this.name} </span>
+            受到<span style="color:red"> ${magickDamage} </span>点谋略伤害<br>
+            <span style="font-weight:bold"> ${objs[1].name} </span>由于<span style="font-weight:bold"> ${player.name} </span>的<span style="color:orange"> ${this.name} </span>
+            受到<span style="color:red"> ${attackDamage} </span>点兵刃伤害<br>
+            <span style="font-weight:bold"> ${objs[1].name} </span>由于<span style="font-weight:bold"> ${player.name} </span>的<span style="color:orange"> ${this.name} </span>
+            受到<span style="color:red"> ${magickDamage} </span>点谋略伤害<br>
+            `;
         }
     },
     defaultSkill : {
@@ -156,6 +204,16 @@ skill = {
     shabaotest : {
         name : "测试用沙暴",
         parent : null,
+        start : function(player){
+            message += `<span style="font-weight:bold">${player.name}</span> 准备发动 <span style="color:orange">${this.name}</span>`
+        },
+        lunch : function(player){
+            let objs = player.getObj(2);
+            objs[0].debuff.sandstorm.restRound = 2;
+            objs[0].debuff.sandstorm.from = player;
+            onjs[0].debuff.sandstorm.damage = player.intelligence * 0;
+
+        }
 
     }
 
@@ -163,18 +221,17 @@ skill = {
 
 function playerinit(){
     //构造武将
-    
     player1.main = 1;
     player4.main = 1;
-    player1.skill1 = skill.tujishangrou;
-
-    //初始化速度
-    // for(index in teamAll){
-    //     let spead = getRandomNum(1,100);
-    //     teamAll[index].speed = spead;
-    // }
-    
+    speedinit();
 };
+//初始化速度
+function speedinit(){
+    for(index in teamAll){
+        let spead = getRandomNum(1,200);
+        teamAll[index].speed = spead;
+    }
+}
 //初始化武将
 var player1 = new Player('关羽','guanyu'),
     player2 = new Player('张飞','zhangfei'),
@@ -183,30 +240,65 @@ var player1 = new Player('关羽','guanyu'),
     player5 = new Player('孙坚','sunjian'),
     player6 = new Player('孙权','sunquan'),
     //添加阵营
+    selfTeam = {
+        
+        totalDamage : 0,
+        playerlist : [player1,player2,player3]
+    },
+    enemyTeam = {
+        totalDamage : 0,
+        playerlist : [player4,player5,player6]
+    },
     teamA = [player1,player2,player3],
     teamB = [player4,player5,player6],
-    teamAll = [...teamA,...teamB];
+    teamAll = [player1,player2,player3,player4,player5,player6];
+    player3.speed = 180;
+    player2.speed = 1;
+    playerGoList = [...teamAll];
+    playerGoList.sort(compareSpeed);
+    function compareSpeed(a,b){
+        return a.speed - b.speed;
+    }
+    
+
     for (index in teamA){
         teamA[index].team = teamA;
+        teamA[index].skills[1] = skilllist.yijujianmie;
     }
+    player3.skills[2] = skilllist.shabaotest;
     for (index in teamB){
         teamB[index].team = teamB;
+        teamB[index].skills[1] = skilllist.tujishangrou;
     }
 function viewRendeer(){
-    for(let i=1;i<=6;i++){
-        document.getElementById('head'+i).style.backgroundImage = 'url(img/'+teamAll[i-1].head+'.jpg)';
-        document.getElementById('name'+i).innerText = teamAll[i-1].name;
-        document.getElementById('attack'+i).innerText = teamAll[i-1].attack;
-        document.getElementById('intelligence'+i).innerText = teamAll[i-1].intelligence;
-        document.getElementById('speed'+i).innerText = teamAll[i-1].speed;
-        for(let j=1;j<=3;j++){
-            document.getElementById('skill'+i+'_'+j).innerText = teamAll[i-1].skills[j-1].name;
+    let team = [...teamA,...teamB];
+        for(let i=1;i<=6;i++){
+            document.getElementById('head'+i).style.backgroundImage = 'url(img/'+team[i-1].head+'.jpg)';
+            document.getElementById('name'+i).innerText = team[i-1].name;
+            document.getElementById('attack'+i).innerText = team[i-1].attack;
+            document.getElementById('intelligence'+i).innerText = team[i-1].intelligence;
+            document.getElementById('speed'+i).innerText = team[i-1].speed;
+            for(let j=1;j<=3;j++){
+                document.getElementById('skill'+i+'_'+j).innerText = team[i-1].skills[j-1].name;
+            }
         }
-    }
+    
+    
 }
+var roundCount = 0;
+function round(){
+    for(let i=0;i<8;i++){
+        roundCount += 1;
+        message += `<span style="font-size:16px;line-height:30px;font-weight:bold">回合${roundCount}</span><br>`;
+        for(index in playerGoList){
+            playerGoList[index].go();
+        }
+        document.getElementById('battle_message').innerHTML = message;
+    }
+    
+}
+
 
 playerinit();
 viewRendeer();
-
-
-player1.go();
+round();

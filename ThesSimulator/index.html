@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>三国志战略版-技能测试</title>
     <style> 
         *{
             margin: 0;padding: 0;
@@ -27,7 +27,11 @@
             display: inline-block;
             background-color: #eee;
             width: 50%;
-
+        }
+        #battle_message{
+            line-height: 16px;
+            overflow: scroll;
+            max-height: 300px;
         }
         .right_team{
             display: inline-block;         
@@ -102,8 +106,13 @@
                 </div>
                 
             </div>
-            <div id="battle_message" class="middle_message">
-        
+            <div class="middle_message">
+                <div class="battlestatistic">
+                    战损
+                    <span id="teamAmain"></span><span id="teamAmessage"></span>
+                    <span id="teamAmain"></span><span id="teamBmessage"></span>
+                </div>
+                <div id="battle_message"></div>
             </div>
             <div class="right_team">
                 <div class="player">
