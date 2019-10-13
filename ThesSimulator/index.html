@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style> 
+        *{
+            margin: 0;padding: 0;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+        .container{
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+        .left_team{
+            display: inline-block;
+            flex-direction: column;
+            width: 25%;
+        }
+        .middle_message{
+            display: inline-block;
+            background-color: #eee;
+            width: 50%;
+
+        }
+        .right_team{
+            display: inline-block;         
+            flex-direction: column;
+            width: 25%;
+        }
+        .player{
+            background-color: antiquewhite;
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: row;
+        }
+        .head{
+            display: inline-block;
+            width: 50%;
+            background-position: center;
+            background-size: cover;
+        }
+        
+        .name{
+            display: inline-block;
+        }
+        .player_message{
+            display: inline-block;
+            
+        }
+        .skill{
+            color : red;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left_team">
+                <div class="player">
+                    <div class="head" id="head1"></div>
+                    <div class="player_message">
+                        <div id="name1"></div>
+                        <div>武力<span id=attack1></span></div>
+                        <div>智力<span id="intelligence1"></span></div>
+                        <div>速度<span id="speed1"></span></div>                
+                        <div id="skill1_1" class="skill"></div>
+                        <div id="skill1_2" class="skill"></div>
+                        <div id="skill1_3" class="skill"></div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="head" id="head2"></div>
+                    <div class="player_message">
+                        <div id="name2"></div>
+                        <div>武力<span id=attack2></span></div>
+                        <div>智力<span id="intelligence2"></span></div>
+                        <div>速度<span id="speed2"></span></div>                
+                        <div id="skill2_1" class="skill"></div>
+                        <div id="skill2_2" class="skill"></div>
+                        <div id="skill2_3" class="skill"></div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="head" id="head3"></div>
+                    <div class="player_message">
+                        <div id="name3"></div>
+                        <div>武力<span id=attack3></span></div>
+                        <div>智力<span id="intelligence3"></span></div>
+                        <div>速度<span id="speed3"></span></div>                
+                        <div id="skill3_1" class="skill"></div>
+                        <div id="skill3_2" class="skill"></div>
+                        <div id="skill3_3" class="skill"></div>
+                    </div>
+                </div>
+                
+            </div>
+            <div id="battle_message" class="middle_message">
+        
+            </div>
+            <div class="right_team">
+                <div class="player">
+                    <div class="head" id="head4"></div>
+                    <div class="player_message">
+                        <div id="name4"></div>
+                        <div>武力<span id=attack4></span></div>
+                        <div>智力<span id="intelligence4"></span></div>
+                        <div>速度<span id="speed4"></span></div>                
+                        <div id="skill4_1" class="skill"></div>
+                        <div id="skill4_2" class="skill"></div>
+                        <div id="skill4_3" class="skill"></div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="head" id="head5"></div>
+                    <div class="player_message">
+                        <div id="name5"></div>
+                        <div>武力<span id=attack5></span></div>
+                        <div>智力<span id="intelligence5"></span></div>
+                        <div>速度<span id="speed5"></span></div>                
+                        <div id="skill5_1" class="skill"></div>
+                        <div id="skill5_2" class="skill"></div>
+                        <div id="skill5_3" class="skill"></div>
+                    </div>
+                </div>
+                <div class="player">
+                    <div class="head" id="head6"></div>
+                    <div class="player_message">
+                        <div id="name6"></div>
+                        <div>武力<span id=attack6></span></div>
+                        <div>智力<span id="intelligence6"></span></div>
+                        <div>速度<span id="speed6"></span></div>                
+                        <div id="skill6_1" class="skill"></div>
+                        <div id="skill6_2" class="skill"></div>
+                        <div id="skill6_3" class="skill"></div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+
+
+    <script src="js/main.js"></script>
+</body>
+</html>
