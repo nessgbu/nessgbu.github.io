@@ -61,6 +61,12 @@
         .skill{
             color : red;
         }
+        .button{
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px;
+            background-color: darkgoldenrod;
+        }
         
         
     </style>
@@ -75,9 +81,10 @@
                         <div>武力<span id=attack1></span></div>
                         <div>智力<span id="intelligence1"></span></div>
                         <div>速度<span id="speed1"></span></div>                
-                        <div id="skill1_1" class="skill"></div>
-                        <div id="skill1_2" class="skill"></div>
-                        <div id="skill1_3" class="skill"></div>
+                        <div class="skill"><span id="skill1_1"></span>(<span id="skill1_1_count"></span>)<span id="skill1_1_damage"></span></div>
+                        <div class="skill"><span id="skill1_2"></span>(<span id="skill1_2_count"></span>)<span id="skill1_2_damage"></span></div>
+                        <div class="skill"><span id="skill1_3"></span>(<span id="skill1_3_count"></span>)<span id="skill1_3_damage"></span></div>
+                        <div>普通攻击(<span id="att_count1"></span>)<span id="att_damage1"></span></div>
                     </div>
                 </div>
                 <div class="player">
@@ -87,9 +94,10 @@
                         <div>武力<span id=attack2></span></div>
                         <div>智力<span id="intelligence2"></span></div>
                         <div>速度<span id="speed2"></span></div>                
-                        <div id="skill2_1" class="skill"></div>
-                        <div id="skill2_2" class="skill"></div>
-                        <div id="skill2_3" class="skill"></div>
+                        <div class="skill"><span id="skill2_1"></span>(<span id="skill2_1_count"></span>)<span id="skill2_1_damage"></span></div>
+                        <div class="skill"><span id="skill2_2"></span>(<span id="skill2_2_count"></span>)<span id="skill2_2_damage"></span></div>
+                        <div class="skill"><span id="skill2_3"></span>(<span id="skill2_3_count"></span>)<span id="skill2_3_damage"></span></div>
+                        <div>普通攻击(<span id="att_count2"></span>)<span id="att_damage2"></span></div>
                     </div>
                 </div>
                 <div class="player">
@@ -99,18 +107,25 @@
                         <div>武力<span id=attack3></span></div>
                         <div>智力<span id="intelligence3"></span></div>
                         <div>速度<span id="speed3"></span></div>                
-                        <div id="skill3_1" class="skill"></div>
-                        <div id="skill3_2" class="skill"></div>
-                        <div id="skill3_3" class="skill"></div>
+                        <div class="skill"><span id="skill3_1"></span>(<span id="skill3_1_count"></span>)<span id="skill3_1_damage"></span></div>
+                        <div class="skill"><span id="skill3_2"></span>(<span id="skill3_2_count"></span>)<span id="skill3_2_damage"></span></div>
+                        <div class="skill"><span id="skill3_3"></span>(<span id="skill3_3_count"></span>)<span id="skill3_3_damage"></span></div>
+                        <div>普通攻击(<span id="att_count3"></span>)<span id="att_damage3"></span></div>
                     </div>
                 </div>
                 
             </div>
             <div class="middle_message">
+                <div style="text-align: center;font-size: 20px;font-weight: bold;">
+                    <span class="button" onclick="init()">Restart</span>
+                    <span class="button" onclick="round()">Continue</span></div>
                 <div class="battlestatistic">
-                    战损
-                    <span id="teamAmain"></span><span id="teamAmessage"></span>
-                    <span id="teamAmain"></span><span id="teamBmessage"></span>
+                    <span style="color:darkgreen;font-weight: bold;font-size: 16px;">关羽队</span>
+                    总伤害：<span id="teamAdamage"></span>
+                    战损：<span id="teamAbedamaged"></span>
+                    <span style="color:crimson;font-weight: bold;font-size: 16px;">孙策队</span>
+                    总伤害：<span id="teamBdamage"></span>
+                    战损：<span id="teamBbedamaged"></span>
                 </div>
                 <div id="battle_message"></div>
             </div>
@@ -122,9 +137,10 @@
                         <div>武力<span id=attack4></span></div>
                         <div>智力<span id="intelligence4"></span></div>
                         <div>速度<span id="speed4"></span></div>                
-                        <div id="skill4_1" class="skill"></div>
-                        <div id="skill4_2" class="skill"></div>
-                        <div id="skill4_3" class="skill"></div>
+                        <div class="skill"><span id="skill4_1"></span>(<span id="skill4_1_count"></span>)<span id="skill4_1_damage"></span></div>
+                        <div class="skill"><span id="skill4_2"></span>(<span id="skill4_2_count"></span>)<span id="skill4_2_damage"></span></div>
+                        <div class="skill"><span id="skill4_3"></span>(<span id="skill4_3_count"></span>)<span id="skill4_3_damage"></span></div>
+                        <div>普通攻击(<span id="att_count4"></span>)<span id="att_damage4"></span></div>
                     </div>
                 </div>
                 <div class="player">
@@ -134,21 +150,23 @@
                         <div>武力<span id=attack5></span></div>
                         <div>智力<span id="intelligence5"></span></div>
                         <div>速度<span id="speed5"></span></div>                
-                        <div id="skill5_1" class="skill"></div>
-                        <div id="skill5_2" class="skill"></div>
-                        <div id="skill5_3" class="skill"></div>
+                        <div class="skill"><span id="skill5_1"></span>(<span id="skill5_1_count"></span>)<span id="skill5_1_damage"></span></div>
+                        <div class="skill"><span id="skill5_2"></span>(<span id="skill5_2_count"></span>)<span id="skill5_2_damage"></span></div>
+                        <div class="skill"><span id="skill5_3"></span>(<span id="skill5_3_count"></span>)<span id="skill5_3_damage"></span></div>
+                        <div>普通攻击(<span id="att_count5"></span>)<span id="att_damage5"></span></div>
                     </div>
                 </div>
                 <div class="player">
                     <div class="head" id="head6"></div>
                     <div class="player_message">
-                        <div id="name6"></div>
+                        <div id="name6"></div>  
                         <div>武力<span id=attack6></span></div>
                         <div>智力<span id="intelligence6"></span></div>
                         <div>速度<span id="speed6"></span></div>                
-                        <div id="skill6_1" class="skill"></div>
-                        <div id="skill6_2" class="skill"></div>
-                        <div id="skill6_3" class="skill"></div>
+                        <div class="skill"><span id="skill6_1"></span>(<span id="skill6_1_count"></span>)<span id="skill6_1_damage"></span></div>
+                        <div class="skill"><span id="skill6_2"></span>(<span id="skill6_2_count"></span>)<span id="skill6_2_damage"></span></div>
+                        <div class="skill"><span id="skill6_3"></span>(<span id="skill6_3_count"></span>)<span id="skill6_3_damage"></span></div>
+                        <div>普通攻击(<span id="att_count6"></span>)<span id="att_damage6"></span></div>
                     </div>
                 </div>
             </div>
