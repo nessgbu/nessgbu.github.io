@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+        #item{
+            margin: 0 auto;
+        }
+        #item div span{
+            display: inline-block;
+            text-align: center;
+            width: 11.2%;
+        }
+        #menu{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background-color: rgba(0, 0, 0,0.5);
+        }
+        #menu span{
+            font-size: 14px;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        #list{
+            margin-top: 30px;
+            font-size: 12px;
+            line-height: 20px;
+        }
+        #list div:nth-child(even){
+            background-color: #eee;
+        }
+        input[type="checkbox"]{
+            display: none;
+        }
+        input[type="checkbox"]:checked ~ span{
+            color : #fc0;
+        }
+        
+       
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div id="item">
+        <div id="menu">
+            <span id="option" onclick="changeopt()">满级</span>
+            <label class="att" for="att"><input onchange="trans()" type="checkbox" id="att"><span>武力</span></label>
+            <label class="int" for="int"><input onchange="trans()" type="checkbox" id="int"><span>智力</span></label>
+            <label class="def" for="def"><input onchange="trans()" type="checkbox" id="def"><span>统帅</span></label>
+            <label class="spd" for="spd"><input onchange="trans()" type="checkbox" id="spd"><span>速度</span></label>
+            <label class="pol" for="pol"><input onchange="trans()" type="checkbox" id="pol"><span>政治</span></label>
+            <label class="cha" for="cha"><input onchange="trans()" type="checkbox" id="cha"><span>魅力</span></label>
+            <span>筛选</span>
+        </div>
+        <div id="list">
+
+        </div>
+
+
+    </div>
+
+    <script src="heros.js"></script>
+    <script src="sort.js"></script>
+</body>
+</html>
