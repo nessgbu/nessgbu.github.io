@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=KWYBZ-FXDKP-FJRD3-LUMD7-55BXK-E2BL3&libraries=drawing,geometry,place,convertor,visualization"></script> -->
+    <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&key=NF3BZ-CLTCD-ZKN4A-HO6YC-3AI53-PKBBF"></script>
+    <script src="./geolocation.min.js"></script>
+    <title>腾讯地图封装</title>
+    <style>
+        .container{
+            width: 500px;
+            height: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" class="container"></div>
+    <script src="./jquery3.4.1.js"></script>
+    <script>
+        /**
+        * params：{String} container 容器选择器
+        * return: map
+        */
+        function initQQMap(containerid){
+            // 创建地体
+            // let map = new qq.maps.Map(document.querySelector(container));
+
+            let map = new TMap.Map(containerid, {
+                zoom: 12, //设置地图缩放级别
+                center: new TMap.LatLng(39.85344, 116.68109) //设置地图中心点坐标
+            });
+            // 地图标记
+            let markers = [];
+            // 移动地图中心位置
+            // map.panTo(new qq.maps.LatLng(39.914850, 116.403765));
+            // 地图比例尺
+            // map.zoomTo(13);
+
+            /**
+             * 生成point
+             * @params [Number] lat 纬度
+             * @params [Number] lng 经度
+             * @return point
+             */
+            function makePoint(lat,lng){
+                return new TMap.LatLng(lat, lng)
+                // return new qq.maps.LatLng(lat,lng);
+            }
+
+            /**
+             * 地图点击事件
+             */
+             map.on("click",function(evt){
+                var lat = evt.latLng.getLat().toFixed(6);
+                var lng = evt.latLng.getLng().toFixed(6);
+                addMarker(lat,lng,true);
+            })
+            // 旧版api
+            // qq.maps.event.addListener(
+            //     map,
+            //     'click',
+            //     event => { // 当前事件为添加一个markers,并清除其他markers
+            //         let point = new qq.maps.LatLng(event.latLng.getLat(),event.latLng.getLng());
+            //         addMarker(point);
+            //         console.log(point);
+            //     }
+            // )
+        
+            /**
+             * 添加标记函数 
+             * @params lat 纬度
+             * @params lng 经度
+             * @params {bool} removeAll 是否移除之前的标记
+             */
+            function addMarker(lat,lng,removeAll){
+                // 是否删除已拥有的标记
+                if(true){
+                    for(item of markers){
+                        item.setMap(null);
+                    }
+                    markers = [];
+                }
+                // 创建新的标记
+                let marker = getMarker(lat,lng);
+
+                // 旧版api
+                // let marker = new qq.maps.Marker({
+                //     position: point,
+                //     map: map
+                // });
+                markers.push(marker);
+                return marker;
+            }
+
+            // 创建marker
+            function getMarker(lat,lng){
+                return new TMap.MultiMarker({
+                    //图层id
+                    id: "marker-layer", 
+                    map: map,
+                    //点标注的相关样式
+                    styles: {
+                        "marker": new TMap.MarkerStyle({
+                            "width": 25,
+                            "height": 35,
+                            "anchor": { x: 16, y: 32 },
+                            "src": "https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png"
+                        })
+                    },
+                    //点标注数据数组
+                    geometries: [{
+                        "id": "demo",
+                        "styleId": "marker",
+                        "position": makePoint(lat, lng),
+                        "properties": {
+                            "title": "marker"
+                        }
+                    }]
+                });
+            }
+
+            /**
+             * 添加点标记画圈 
+             */
+            function addMarkerWithCircle(point,){
+                var circle = new TMap.MultiCircle({ 
+                map,
+                styles: { // 设置圆形样式
+                    'circle': new TMap.CircleStyle({
+                    'color': 'rgba(41,91,255,0.16)',
+                    'showBorder': true,
+                    'borderColor': 'rgba(41,91,255,1)',
+                    'borderWidth': 2,
+                    }),
+                },
+                geometries: [{
+                    styleId: 'circle',
+                    center: center, //圆形中心点坐标 
+                    radius: 6500,	//半径（单位：米）
+                }],
+                });	
+            }
+            return map;
+        }
+        // 调用初始化地图函数
+        let map = initQQMap('container');
+        // 创建腾讯地图位置服务
+        let mapGL = new qq.maps.Geolocation(
+            "KWYBZ-FXDKP-FJRD3-LUMD7-55BXK-E2BL3",
+            "晋城120"
+        )
+        /**
+         * 获取位置，首先获取GPS位置，失败后获取IP位置，如果是PC端请自行修改 
+         */
+        mapGL.getLocation(showposition,showerror,{timeout:5000});
+        // 获取定位成功的回调函数
+        function showposition(position){
+            console.log("success");
+        };
+        // 获取GPS定位失败的回调函数，这里会继续获取IP地址
+        function showerror(msg){
+            console.log("获取GPS位置失败，正在调用IP定位...");
+            mapGL.getIpLocation(showposition,showdefeat)
+        }
+        // 获取IP地址失败的回调函数
+        function showdefeat(){
+            console.log("IP定位失败");
+        }
+
+        // 腾讯地图位置搜索服务
+        searchService = new qq.maps.SearchService({
+            //检索成功的回调函数
+            complete: function(results) {
+                //设置回调函数参数
+                console.log(results);
+            },
+            error : function() {
+                alert("出错了。");
+            }
+        })
+        // 搜索的城市
+        searchService.setLocation("晋城市");
+        // 搜索结果的分页页码
+        searchService.setPageIndex(0);
+        // 每页10条
+        searchService.setPageCapacity(10);
+        // 调用位置搜索
+        searchService.search("兰花城");
+
+        /**
+         * 根据地址获取经纬度
+         * @parames
+         */
+        function getPositionByAddress(address,callback){
+            $.ajax({
+                url: 'https://apis.map.qq.com/ws/geocoder/v1/?',
+                type: 'POST',
+                dataType: 'json',
+                headers: {
+                'content-type': 'application/json'
+                },
+                data: {
+                    key: "GKFBZ-BYUEX-KRW4Z-TGEY5-RT3HV-BFB66",
+                    address, // 地址
+                    output: 'json'
+                },
+                success : callback,
+            })
+        }
+        //调用示例
+        getPositionByAddress('晋城市新市西街兰花城',res => {
+            console.log(res)
+        })
+        
+
+        /**
+         * 根据位置获取经纬度
+         */
+        function getAddressByPosition(latitude,longitude,callback){
+            $.ajax({
+                url: 'https://apis.map.qq.com/ws/geocoder/v1/?',
+                type: 'POST',
+                dataType: 'json',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                data: {
+                    key: "GKFBZ-BYUEX-KRW4Z-TGEY5-RT3HV-BFB66",
+                    location: `${latitude},${longitude}`, 
+                    get_poi: 1,
+                },
+                success: callback,
+            })
+        }
+        
+
+
+
+
+
+        
+        
+    </script>
+
+</body>
+</html>
